@@ -44,6 +44,42 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
+    <TextView
+        android:id="@+id/ip"
+        android:layout_width="match_parent"
+        android:layout_height="26dp"
+        android:background="@color/colorPrimaryDark"
+        app:title=""
+        android:text="Public Ip Address:"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/connect"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/change"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="16dp"
+        android:elevation="8dp"
+        android:padding="16dp"
+        android:stateListAnimator="@null"
+        android:text="@string/change"
+        android:textColor="#241708"
+        android:textStyle="bold"
+        app:backgroundTint="@color/white"
+        app:cornerRadius="16dp"
+        app:elevation="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ip" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/copyButton"
@@ -64,7 +100,7 @@
         app:elevation="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/connect" />
+        app:layout_constraintTop_toBottomOf="@+id/change" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/customServer"

@@ -16,6 +16,7 @@ import android.net.Uri
 import android.os.*
 import android.provider.Settings
 import android.text.Html
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
@@ -23,10 +24,10 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.creative.ipfyandroid.Ipfy
 import com.legacy.android.databinding.ActivityLoginBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.io.*
 import java.text.SimpleDateFormat
@@ -36,6 +37,7 @@ import frpclib.Frpclib as Conn
 
 
 class LoginActivity : AppCompatActivity() {
+    private var TAG: String = "loginActivity"
     private var user: String? = null
     private var pwd: String? = null
     private var notificationManager: NotificationManagerCompat? = null
@@ -58,9 +60,26 @@ class LoginActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.STARTED){
                 preference.SERVER.collect{
                     server = it
+                    Toast.makeText(this@LoginActivity, "host: "+server.host, Toast.LENGTH_LONG)
+                            .show()
+                    Toast.makeText(this@LoginActivity, "port: "+server.port, Toast.LENGTH_LONG)
+                            .show()
+                    Toast.makeText(this@LoginActivity, "token: "+server.token, Toast.LENGTH_LONG)
+                            .show()
                 }
             }
         }
+
+        val ipiFy = Ipfy.init(this)
+
+        ipiFy.getPublicIpObserver().observe(this) { ipData ->
+            if (ipData.currentIpAddress != null) {
+                binding.ip.text = "Public IP address: " + ipData.currentIpAddress
+            } else {
+                binding.ip.text = "Public IP address: N/A"
+            }
+        }
+
         notificationManager = NotificationManagerCompat.from(this)
         val pm = getSystemService(PowerManager::class.java)
         if (!pm.isIgnoringBatteryOptimizations(packageName)) {
@@ -103,6 +122,13 @@ class LoginActivity : AppCompatActivity() {
             startActivity(Intent(this, CustomServerActivity::class.java))
         }
 
+        binding.change.setOnClickListener {
+            val intent = Intent(Settings.ACTION_VOICE_CONTROL_AIRPLANE_MODE)
+            val uri = Uri.fromParts("package", this.packageName, null)
+            intent.data = uri
+            this.startActivity(intent)
+
+        }
 
     }
 
@@ -111,6 +137,7 @@ class LoginActivity : AppCompatActivity() {
         val logfile = File(filesDir, MyApplication.LOGFILE)
         if (logfile.exists()) {
             try {
+
                 val inputStream: InputStream = assets.open(MyApplication.LOGFILE)
                 var line: String? = null
                 val br = BufferedReader(FileReader(logfile))
@@ -128,13 +155,15 @@ class LoginActivity : AppCompatActivity() {
                         "Port is already used. Try again",
                         Toast.LENGTH_LONG
                     ).show()
-                } else if (isFileEmpty) {
+                }
+                else if (isFileEmpty) {
                     Toast.makeText(
-                        this@LoginActivity,
-                        "Not connected. Restart app and connect again",
-                        Toast.LENGTH_LONG
+                            this@LoginActivity,
+                            "Not connected. Restart app and connect again",
+                            Toast.LENGTH_LONG
                     ).show()
-                } else {
+                }
+                else {
                     showConnectionDetails()
                     val bundle = Bundle().also {
                         it.putInt(PORT, mRandomPort)
@@ -198,6 +227,7 @@ class LoginActivity : AppCompatActivity() {
                     val servicesIntent = Intent(applicationContext, NotificationService::class.java)
                     servicesIntent.putExtra("stat", "Proxidize Android is running!!")
                     startService(servicesIntent)
+
                 }
                 br.close()
                 inputStream.close()
@@ -205,6 +235,7 @@ class LoginActivity : AppCompatActivity() {
                 e.printStackTrace()
             }
         }
+
         return connectionStatus
 
     }
@@ -231,8 +262,8 @@ class LoginActivity : AppCompatActivity() {
 
     private fun startConnection() {
         CoroutineScope(Dispatchers.IO).launch {
-            Conn.touch()
-            Conn.run("$filesDir/config.ini")
+//            Conn.touch()
+            Conn.run("$filesDir/"+MyApplication.FILENAME)
         }
     }
 
@@ -274,6 +305,9 @@ class LoginActivity : AppCompatActivity() {
             }
         }
         try {
+            Log.d(TAG, "host:"+server.host)
+            Log.d(TAG, "port:"+server.port)
+            Log.d(TAG, "token:"+server.token)
             out = FileOutputStream(file, true)
             mRandomPort = getRandomPort()
             user = getAlphaNumericString()
@@ -287,6 +321,7 @@ class LoginActivity : AppCompatActivity() {
             out.write("admin_user = admin\r\n".toByteArray())
             out.write("admin_passwd = admin\r\n".toByteArray())
             out.write("log_file = ${logFile.absolutePath}\r\n".toByteArray())
+//            out.write("log_file = /storage/emulated/0/Android/frpc/frpc.log\r\n".toByteArray())
             out.write("log_level = info\r\n".toByteArray())
             out.write("log_max_days = 3\r\n".toByteArray())
             out.write("pool_count = 5\r\n".toByteArray())

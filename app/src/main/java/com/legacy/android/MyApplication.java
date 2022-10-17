@@ -26,6 +26,7 @@ public class MyApplication extends Application {
         mContext = getApplicationContext();
         createnotficationchannel();
         copyToSD("config.ini");
+
     }
 
     private void createnotficationchannel() {

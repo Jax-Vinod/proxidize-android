@@ -7,6 +7,20 @@
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+<!--    air planemode-->
+<!--    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"/>-->
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+
+    <uses-permission android:name="android.permission.MODIFY_PHONE_STATE"/>
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+<!--    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />-->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="29"
+        tools:ignore="ScopedStorage"/>
 
     <application
         android:name=".MyApplication"
@@ -20,7 +34,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoAction"
         android:usesCleartextTraffic="false"
-        tools:targetApi="31">
+        tools:targetApi="31"
+        >
         <activity
             android:name=".CustomServerActivity"
             android:exported="false"

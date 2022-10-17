@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Proxidize Android Legacy</string>
+    <string name="app_name">Crypto Proxy</string>
     <string name="_4g_proxy_solutions">4G Proxy Solutions</string>
 
     <!-- Strings related to login -->
@@ -30,6 +30,7 @@
     <string name="title_activity_drawer">DrawerActivity</string>
     <string name="proxy"><b>IP</b> : %1$s\n<b>Port</b> : %2$d\n<b>Username</b> : %3$s\n<b>Password</b> : %4$s</string>
     <string name="connect">Connect</string>
+    <string name="change">Change IP</string>
     <string name="copy_proxy_to_clipboard">Copy Proxy To Clipboard</string>
     <string name="your_proxy_connection_details">Your Proxy Connection Details:</string>
     <string name="exit">Exit</string>

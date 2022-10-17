@@ -3,7 +3,9 @@ package com.legacy.android
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.legacy.android.databinding.ActivityCustomServerBinding
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -12,10 +14,25 @@ class CustomServerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCustomServerBinding
     private val preference by lazy { ServerPreference.getInstance(this) }
+    private var server: ProxyServer = ProxyServer.default()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityCustomServerBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                preference.SERVER.collect{
+                    server = it
+
+                    binding.etHost.setText(server.host)
+                    binding.etPort.setText(server.port)
+                    binding.etToken.setText(server.token)
+                }
+            }
+        }
+
         binding.saveButton.setOnClickListener {
             if (isClear()) {
                 Toast.makeText(this, "Saving server info", Toast.LENGTH_SHORT).show()
@@ -40,7 +57,6 @@ class CustomServerActivity : AppCompatActivity() {
             }
         }
     }
-
 
     private fun isClear(): Boolean {
         var clear = true
